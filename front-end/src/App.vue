@@ -1,11 +1,29 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div id="app" class="h-full w-full bg-white dark:bg-gray-900">
+    <router-view />
+  </div>
 </template>
 
-<style scoped></style>
+<script>
+export default {
+  name: 'App'
+}
+</script>
+
+<style>
+/* Global app styles */
+#app {
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Ensure proper mobile viewport */
+@media (max-width: 768px) {
+  #app {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+</style>
