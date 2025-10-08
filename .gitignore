@@ -1,4 +1,4 @@
-node_modules/
+# node_modules/
 dist/
 coverage/
 .DS_Store
@@ -9,6 +9,6 @@ coverage/
 front-end/.env
 back-end/.env
 uploads/
-# back-end/node_modules/
-# front-end/node_modules/
+back-end/node_modules/
+front-end/node_modules/
 
