@@ -5,3 +5,7 @@ router.put('/me', authenticate, userController.updateProfile);
 router.post('/me/avatar', authenticate, uploadAvatar, userController.uploadAvatar);
 router.post('/:userId/block', authenticate, userController.blockUser);
 router.post('/:userId/unblock', authenticate, userController.unblockUser);
+
+
+
+

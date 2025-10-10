@@ -5,7 +5,7 @@ const Login = () => import('../views/Login.vue')
 const Register = () => import('../views/Register.vue')
 const Chat = () => import('../views/Chat.vue')
 const Groups = () => import('../views/Groups.vue')
-const GroupSettings = () => import('../views/GroupSettings.vue')
+const GroupSettings = () => import('../views/GroupInfo.vue')
 const Profile = () => import('../views/Profile.vue')
 const Settings = () => import('../views/Settings.vue')
 

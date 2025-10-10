@@ -3,3 +3,5 @@ router.post('/:conversationId/messages', authenticate, messageController.sendMes
 router.post('/:conversationId/messages/upload', authenticate, uploadFile, messageController.uploadFile);
 router.put('/:conversationId/messages/:messageId', authenticate, messageController.editMessage);
 router.delete('/:conversationId/messages/:messageId', authenticate, messageController.deleteMessage);
+
+
