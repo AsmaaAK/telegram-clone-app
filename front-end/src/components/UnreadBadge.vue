@@ -1,7 +1,7 @@
 <template>
   <span 
     v-if="count > 0" 
-    class="inline-flex items-center justify-center min-w-[18px] h-5 px-1.5 text-xs font-medium rounded-full bg-blue-500 text-white shadow-sm transition-all duration-200"
+    class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-bold rounded-full bg-green-400 text-white shadow-sm transition-all duration-200 hover:bg-green-500"
     :class="sizeClass"
     :title="`${count} unread messages`"
   >
@@ -13,7 +13,10 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  count: Number,
+  count: {
+    type: Number,
+    required: true
+  },
   size: {
     type: String,
     default: 'md'
@@ -29,9 +32,9 @@ const sizeClass = computed(() => {
     case 'sm':
       return 'min-w-[16px] h-4 px-1 text-[10px]'
     case 'lg':
-      return 'min-w-[20px] h-6 px-2 text-xs'
+      return 'min-w-[24px] h-6 px-2 text-xs'
     default:
-      return 'min-w-[18px] h-5 px-1.5 text-xs'
+      return 'min-w-[20px] h-5 px-1.5 text-[11px]'
   }
 })
 

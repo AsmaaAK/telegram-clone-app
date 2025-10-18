@@ -1,33 +1,33 @@
 <template>
   <div class="h-full w-full flex flex-col bg-white dark:bg-gray-900">
     <!-- Telegram-style header -->
-    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-4">
-      <router-link to="/" class="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <header class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-3 flex items-center gap-4 shadow-md">
+      <router-link to="/" class="p-2 -ml-2 hover:bg-blue-400 dark:hover:bg-blue-500 rounded-full transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </router-link>
-      <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Settings</h1>
+      <h1 class="text-lg font-semibold">الإعدادات</h1>
     </header>
     
     <!-- Content -->
     <div class="flex-1 overflow-y-auto">
-      <div class="max-w-xl mx-auto space-y-4 px-4 py-6">
+      <div class="max-w-xl mx-auto space-y-2 px-4 py-4">
         <!-- Theme -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Theme</label>
+        <div class="bg-white dark:bg-gray-800 p-4 border-b border-gray-100 dark:border-gray-700">
+          <label class="block text-xs text-gray-500 dark:text-gray-400 mb-3">المظهر</label>
           <select v-model="theme" 
-                  class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none cursor-pointer border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2">
-            <option value="light">☀️ Light Mode</option>
-            <option value="dark">🌙 Dark Mode</option>
+                  class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none cursor-pointer">
+            <option value="light">☀️ الوضع الفاتح</option>
+            <option value="dark">🌙 الوضع الداكن</option>
           </select>
         </div>
         
         <!-- Language -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Language</label>
+        <div class="bg-white dark:bg-gray-800 p-4">
+          <label class="block text-xs text-gray-500 dark:text-gray-400 mb-3">اللغة</label>
           <select v-model="language" 
-                  class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none cursor-pointer border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2">
+                  class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none cursor-pointer">
             <option value="en">🇬🇧 English</option>
             <option value="ar">🇸🇦 العربية</option>
           </select>
@@ -35,12 +35,12 @@
         
         <!-- Privacy Section -->
         <div class="mt-6">
-          <h2 class="text-sm font-medium text-gray-700 dark:text-gray-300 px-2 mb-3">Privacy</h2>
+          <h2 class="text-xs text-gray-500 dark:text-gray-400 px-4 mb-2 font-semibold">الخصوصية</h2>
           
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700">
+          <div class="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
             <div class="px-4 py-3.5 flex items-center justify-between">
               <label for="lastseen" class="text-sm text-gray-900 dark:text-gray-100 cursor-pointer flex-1">
-                Show last seen
+                إظهار آخر ظهور
               </label>
               <input id="lastseen" 
                      type="checkbox" 
@@ -50,7 +50,7 @@
             
             <div class="px-4 py-3.5 flex items-center justify-between">
               <label for="hideStatus" class="text-sm text-gray-900 dark:text-gray-100 cursor-pointer flex-1">
-                Hide status
+                إخفاء الحالة
               </label>
               <input id="hideStatus" 
                      type="checkbox" 
@@ -63,8 +63,8 @@
         <!-- Save button -->
         <button @click="save" 
                 :disabled="loading"
-                class="w-full mt-6 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white px-6 py-3.5 rounded-lg font-medium transition-colors shadow-md">
-          {{ loading ? 'Saving...' : 'Save Changes' }}
+                class="w-full mt-6 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md">
+          {{ loading ? 'جاري الحفظ...' : 'حفظ التغييرات' }}
         </button>
       </div>
     </div>
@@ -124,3 +124,5 @@ async function save() {
 <style scoped>
 /* No additional styles needed - using Tailwind utilities */
 </style>
+
+

@@ -1,9 +1,9 @@
 <template>
   <div class="h-full w-full flex bg-white dark:bg-gray-900">
     <!-- Sidebar - Hidden on mobile when chat is open -->
-    <div class="w-full md:w-80 lg:w-96 h-full flex-shrink-0 border-r border-gray-200 dark:border-gray-800"
+    <div class="w-full md:w-96 lg:w-[400px] h-full flex-shrink-0 border-r border-gray-200 dark:border-gray-800"
          :class="chat.activeConversationId ? 'hidden md:flex' : 'flex'">
-      <ContactsSidebar :users="sortedUsers" @select="openChat" />
+      <ContactsSidebar :users="sortedUsers" @select="openChat" @openMenu="sidebarMenuOpen = true" />
     </div>
     
     <!-- Chat area - Full screen on mobile, side-by-side on desktop -->
@@ -14,8 +14,8 @@
       <div v-if="!chat.activeConversationId && chat.users.length === 0" 
            class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div class="text-center px-4">
-          <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
@@ -25,16 +25,8 @@
       </div>
       
       <div v-else-if="!chat.activeConversationId && chat.users.length > 0" 
-           class="flex-1 flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div class="text-center px-4">
-          <div class="w-24 h-24 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-          </div>
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Telegram</h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Select a contact to start messaging</p>
-        </div>
+           class="flex-1 flex items-center justify-center telegram-background telegram-background-overlay">
+        <!-- Empty state with background pattern -->
       </div>
       
       <!-- Active conversation -->
@@ -61,7 +53,29 @@
         
         <!-- Messages area with Telegram-style background -->
         <div ref="messagesContainer"
-             class="flex-1 overflow-y-auto px-4 py-4 space-y-3 bg-gray-50 dark:bg-gray-900">
+             class="flex-1 overflow-y-auto px-3 md:px-4 py-2 space-y-1 telegram-background telegram-background-overlay scroll-smooth relative"
+             style="height: calc(100vh - 120px); max-height: calc(100vh - 120px);"
+             @scroll="handleScroll">
+          
+          <!-- Scroll to top button -->
+          <button v-if="!isNearBottom && !isScrolling"
+                  @click="scrollToTop"
+                  class="fixed top-20 right-4 z-10 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-200"
+                  title="Scroll to top">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </button>
+          
+          <!-- Scroll to bottom button -->
+          <button v-if="!isNearBottom"
+                  @click="scrollToBottom(true)"
+                  class="fixed bottom-20 right-4 z-10 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg transition-all duration-200"
+                  title="Scroll to bottom">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </button>
           <!-- Empty state -->
           <div v-if="messages.length === 0" class="h-full flex items-center justify-center">
             <div class="text-center text-gray-400 dark:text-gray-500">
@@ -79,7 +93,8 @@
                         :from-me="m.from===auth.user?.id" 
                         :type="m.type" 
                         :content="m.content" 
-                        :time="formatTime(m.createdAt)" />
+                        :time="formatTime(m.createdAt)"
+                        :is-read="m.isRead || false" />
         </div>
         
         <Composer v-model="text" 
@@ -91,27 +106,27 @@
         <div v-if="chat.webrtc?.status === 'incoming'" class="fixed inset-0 z-50 flex items-center justify-center">
           <div class="absolute inset-0 bg-black/50"></div>
           <div class="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-[90%] max-w-sm p-6 text-center">
-            <img :src="currentAvatar || placeholder" class="w-16 h-16 rounded-full mx-auto mb-3 object-cover border border-gray-200 dark:border-gray-600"/>
+            <img :src="currentAvatar || placeholder" class="w-16 h-16 rounded-full mx-auto mb-3 object-cover"/>
             <div class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">{{ currentName }}</div>
             <div class="text-sm text-gray-500 dark:text-gray-400 mb-4">Incoming voice call…</div>
             <div class="flex items-center justify-center gap-3">
-              <button @click="acceptCall" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full transition-colors">Accept</button>
-              <button @click="rejectCall" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full transition-colors">Decline</button>
+              <button @click="acceptCall" class="text-white px-4 py-2 rounded-full" style="background-color: #27a2e1;">Accept</button>
+              <button @click="rejectCall" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full">Decline</button>
             </div>
           </div>
         </div>
 
-        <div v-if="chat.webrtc?.status === 'calling' || chat.webrtc?.status === 'connected'" class="fixed bottom-4 right-4 z-40">
-          <div class="bg-blue-500 text-white rounded-full shadow-lg flex items-center gap-3 px-4 py-3">
-            <span class="text-sm font-medium">{{ chat.webrtc.status === 'calling' ? 'Calling…' : 'In call' }}</span>
-            <button @click="toggleMute" class="p-2 rounded-full hover:bg-white/20 transition-colors" :title="chat.webrtc.muted ? 'Unmute' : 'Mute'">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <div v-if="chat.webrtc?.status === 'calling' || chat.webrtc?.status === 'connected'" class="fixed bottom-3 right-3 z-40">
+          <div class="text-white rounded-full shadow-lg flex items-center gap-2 px-4 py-2" style="background-color: #27a2e1;">
+            <span class="text-sm">{{ chat.webrtc.status === 'calling' ? 'Calling…' : 'In call' }}</span>
+            <button @click="toggleMute" class="p-1 rounded-full hover:bg-white/20" :title="chat.webrtc.muted ? 'Unmute' : 'Mute'">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path v-if="!chat.webrtc.muted" d="M9 4.804A3.001 3.001 0 0011 7v3a3 3 0 11-6 0V7a3.001 3.001 0 002-2.196V3a1 1 0 112 0v1.804z" />
                 <path v-else fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0l10 10a1 1 0 11-1.414 1.414l-2.121-2.121A6.002 6.002 0 0110 17a6 6 0 01-6-6 1 1 0 112 0 4 4 0 008 0v-.586l-2-2V10a6 6 0 01-1.293 3.707L4.293 4.293z" clip-rule="evenodd" />
               </svg>
             </button>
-            <button @click="endCall" class="p-2 rounded-full hover:bg-white/20 transition-colors" title="End call">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <button @click="endCall" class="p-1 rounded-full hover:bg-white/20" title="End call">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2.003 5.884l2 2A8 8 0 0110 6c2.21 0 4.21.896 5.997 2.346l2-2A10 10 0 0010 4C6.686 4 3.686 5.343 2.003 5.884zM2 14a1 1 0 011-1h2.586l2-2H4a3 3 0 00-3 3 1 1 0 001 1h3.586l2-2H3a1 1 0 01-1-1z" />
               </svg>
             </button>
@@ -121,7 +136,11 @@
         </div>
       </template>
     </div>
+    
+    <!-- Sidebar Menu -->
+    <SidebarMenu :isOpen="sidebarMenuOpen" @close="sidebarMenuOpen = false" />
   </div>
+  
 </template>
 
 <script setup>
@@ -131,6 +150,7 @@ import { useChatStore } from '../stores/chat'
 import api from '../utils/api'
 import ContactsSidebar from '../components/ContactsSidebar.vue'
 import ChatHeader from '../components/ChatHeader.vue'
+import SidebarMenu from '../components/SidebarMenu.vue'
 import { useGroupsStore } from '../stores/groups'
 
 function onVoiceCall() {
@@ -150,6 +170,7 @@ const messagesContainer = ref(null)
 const isDark = ref(false)
 let typingTimeout = null
 const remoteAudio = ref(null)
+const sidebarMenuOpen = ref(false)
 
 onMounted(() => { 
   chat.bootstrap()
@@ -171,12 +192,56 @@ onBeforeUnmount(() => {
   }
 })
 
-function scrollToBottom() {
+// Scroll state management
+const isNearBottom = ref(true)
+const isScrolling = ref(false)
+let scrollTimeout = null
+
+function scrollToBottom(force = false) {
+  if (!messagesContainer.value) return
+  
+  // If user is manually scrolling and not near bottom, don't auto-scroll
+  if (!force && !isNearBottom.value) return
+  
   setTimeout(() => {
     if (messagesContainer.value) {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+      isNearBottom.value = true
     }
-  }, 100)
+  }, 50)
+}
+
+function handleScroll() {
+  if (!messagesContainer.value) return
+  
+  const container = messagesContainer.value
+  const threshold = 100 // pixels from bottom
+  
+  // Check if user is near bottom
+  const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - threshold
+  isNearBottom.value = isAtBottom
+  
+  // Set scrolling state
+  isScrolling.value = true
+  if (scrollTimeout) clearTimeout(scrollTimeout)
+  scrollTimeout = setTimeout(() => {
+    isScrolling.value = false
+  }, 150)
+}
+
+function scrollToTop() {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = 0
+  }
+}
+
+function scrollToMessage(messageIndex) {
+  if (!messagesContainer.value) return
+  
+  const messages = messagesContainer.value.children
+  if (messages[messageIndex]) {
+    messages[messageIndex].scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 }
 
 function closeChat() {
@@ -193,6 +258,14 @@ const messages = computed(() => {
   })
   return msgs
 })
+
+// Watch for messages changes and auto-scroll (only if near bottom)
+watch(messages, () => {
+  // Only auto-scroll if user is near bottom or just sent a message
+  if (isNearBottom.value) {
+    scrollToBottom()
+  }
+}, { flush: 'post' })
 
 // Computed property for sorted users
 const sortedUsers = computed(() => {
@@ -246,7 +319,7 @@ const currentSubtitle = computed(() => {
   if (!p) {
     // If no presence data, check if user is in our users list and show offline
     const user = chat.users.find(u => u._id === id)
-    return user ? 'last seen recently' : 'unknown'
+    return user ? 'offline' : 'unknown'
   }
   if (p.typing) return 'typing…'
   if (p.status === 'online') return 'online'
@@ -265,7 +338,7 @@ const currentSubtitle = computed(() => {
     if (diffDays < 7) return `last seen ${diffDays}d ago`
     return `last seen ${lastSeenDate.toLocaleDateString()}`
   }
-  return 'last seen recently'
+  return 'offline'
 })
 
 function otherParticipantName(c) {
@@ -277,7 +350,7 @@ function otherParticipantName(c) {
   
   // Find the user in the users list by matching the ID exactly
   const user = chat.users.find(u => u._id === otherId)
-  console.log('🔍 otherParticipantName:', {
+  console.log(' otherParticipantName:', {
     conversationId: c._id,
     participants: [...c.participants],
     currentUserId: auth.user.id,
@@ -296,7 +369,8 @@ async function send() {
   if (!otherId.value) return
   await chat.sendText(chat.activeConversationId, otherId.value, text.value)
   text.value = ''
-  scrollToBottom()
+  // Force scroll to bottom when sending a message
+  scrollToBottom(true)
 }
  
 function onTyping() {
@@ -344,7 +418,7 @@ async function handleBlock() {
     console.error('Error details:', err?.response?.data)
     console.error('Error status:', err?.response?.status)
     const message = err?.response?.data?.message || 'Failed to block user'
-    alert(`❌ ${message}`)
+    alert(` ${message}`)
   }
 }
 
@@ -364,10 +438,10 @@ async function handleUnblockAll() {
       }
     }
     
-    alert('✅ All users have been unblocked successfully!')
+    alert('All users have been unblocked successfully!')
   } catch (err) {
     console.error('Failed to unblock users:', err)
-    alert(`❌ Failed to unblock users: ${err?.response?.data?.message || err.message}`)
+    alert(` Failed to unblock users: ${err?.response?.data?.message || err.message}`)
   }
 }
 
@@ -386,7 +460,7 @@ async function handleClearChat() {
 
 async function handleFileSelect(file) {
   if (!chat.activeConversationId || !otherId.value) {
-    console.error('❌ Cannot upload file: missing conversation ID or recipient ID')
+    console.error(' Cannot upload file: missing conversation ID or recipient ID')
     return
   }
   
@@ -435,9 +509,9 @@ async function handleFileSelect(file) {
     
     console.log('📎 File sent successfully:', data)
   } catch (err) {
-    console.error('❌ Failed to send file:', err)
-    console.error('❌ Error response:', err?.response?.data)
-    console.error('❌ Error status:', err?.response?.status)
+    console.error(' Failed to send file:', err)
+    console.error(' Error response:', err?.response?.data)
+    console.error(' Error status:', err?.response?.status)
     
     let message = 'Failed to send file. Please try again.'
     
@@ -451,43 +525,62 @@ async function handleFileSelect(file) {
       message = 'Network error. Please check your connection.'
     }
     
-    alert(`❌ ${message}`)
+    alert(` ${message}`)
   }
 }
  
   function presenceClass(c) {
     const id = c.participants ? c.participants.find((p) => p !== auth.user?.id) : otherId.value
     const status = id ? chat.presence[id]?.status : 'offline'
-    return status === 'online' ? 'bg-green-500' : 'bg-gray-400'
+    return status === 'online' ? 'bg-blue-500' : 'bg-gray-400'
   }
 
   function presenceDot(id) {
     const status = chat.presence[id]?.status
-    return status === 'online' ? 'bg-green-500' : 'bg-gray-400'
+    return status === 'online' ? 'bg-blue-500' : 'bg-gray-400'
   }
 
   function presenceSubtitle(id) {
     const p = chat.presence[id]
-    if (!p) return 'last seen recently'
+    if (!p) return 'offline'
     if (p.typing) return 'typing…'
-    return p.status === 'online' ? 'online' : 'last seen recently'
+    return p.status === 'online' ? 'online' : 'offline'
   }
 
   async function openChat(userId) {
-    await chat.openOrCreateConversation(userId)
+    try {
+      console.log('🔍 Opening chat for user:', userId)
+      console.log('🔍 Current chat state:', {
+        activeConversationId: chat.activeConversationId,
+        conversationsCount: chat.conversations.length,
+        usersCount: chat.users.length,
+        users: chat.users.map(u => ({ id: u._id, name: u.name }))
+      })
+      
+      await chat.openOrCreateConversation(userId)
+      
+      console.log('Chat opened for user:', userId)
+      console.log('New chat state:', {
+        activeConversationId: chat.activeConversationId,
+        currentConv: currentConv.value,
+        otherId: otherId.value,
+        currentName: currentName.value
+      })
+    } catch (error) {
+      console.error(' Failed to open chat:', error)
+    }
   }
 
   function formatTime(iso) {
     if (!iso) return ''
     try { return new Date(iso).toLocaleTimeString() } catch { return '' }
   }
+
 </script>
 
 <style scoped>
-.input {
- @apply border rounded px-3 py-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700; 
- }
-.btn-primary { 
-@apply bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded; 
-}
+.input { @apply border rounded px-3 py-2 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700; }
+.btn-primary { @apply bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded; }
 </style>
+
+

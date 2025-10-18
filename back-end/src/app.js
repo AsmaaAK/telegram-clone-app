@@ -15,6 +15,7 @@ const accountRoutes = require('./routes/account');
 const conversationRoutes = require('./routes/conversations');
 const messageRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/groups');
+const channelRoutes = require('./routes/channels');
 
 const app = express();
 
@@ -27,6 +28,20 @@ app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || '*', credentials: 
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Debug middleware for requests
+app.use((req, res, next) => {
+      if (req.path.includes('/auth/register')) {
+            console.log('📝 Register request:', {
+                  method: req.method,
+                  path: req.path,
+                  headers: req.headers,
+                  body: req.body,
+                  rawBody: req.body
+            });
+      }
+      next();
+});
 
 // Rate limiter
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
@@ -48,8 +63,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/conversations', conversationRoutes);
-app.use('/api/conversations', messageRoutes);
+app.use('/api/messages', messageRoutes);
 app.use('/api', groupRoutes);
+app.use('/api/channels', channelRoutes);
 
 // Error handler
 app.use(notFound);

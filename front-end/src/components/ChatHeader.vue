@@ -1,45 +1,38 @@
 <template>
-  <header class="h-14 md:h-16 px-4 md:px-6 flex items-center justify-between bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-    <div class="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
-      <!-- Back button for mobile -->
-      <button class="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      
+  <header class="h-14 md:h-16 px-3 md:px-4 flex items-center justify-between text-white shadow-md" style="background-color: #27a2e1;">
+    <div class="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
       <!-- Avatar -->
       <div class="relative flex-shrink-0">
         <img :src="getAvatarUrl(avatar)" 
-             class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-gray-200 dark:border-gray-600" />
+             class="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover ring-2 ring-white/30" />
         <!-- Online indicator -->
         <span v-if="subtitle === 'online'" 
-              class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+              class="absolute bottom-0 right-0 w-2.5 h-2.5 md:w-3 md:h-3 bg-blue-400 rounded-full ring-2 ring-blue-500 dark:ring-blue-600"></span>
       </div>
       
       <!-- User info -->
       <div class="truncate flex-1 min-w-0">
-        <div class="text-base md:text-lg font-medium text-gray-900 dark:text-gray-100 truncate">
+        <div class="text-sm md:text-base font-semibold truncate">
           {{ title }}
         </div>
-        <div class="text-sm font-normal text-gray-500 dark:text-gray-400 truncate" 
-             :class="subtitle === 'typing…' ? 'text-blue-500 dark:text-blue-400 italic' : ''">
-          {{ subtitle || 'last seen recently' }}
+        <div class="text-xs font-normal truncate opacity-90" 
+             :class="subtitle === 'typing…' ? 'italic' : ''">
+          {{ subtitle || 'offline' }}
         </div>
       </div>
     </div>
     
     <!-- Action buttons -->
-    <div class="flex items-center gap-1 md:gap-2 text-gray-600 dark:text-gray-400">
-      <!-- Search in chat button -->
-      <button class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors" title="Search">
+    <div class="flex items-center gap-1 md:gap-2 text-white">
+      <!-- Video call button -->
+      <button class="p-2 hover:bg-gray-700 rounded-full transition-colors flex" title="Video call">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
         </svg>
       </button>
       
       <!-- Voice call button -->
-      <button @click="$emit('voiceCall')" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors" title="Voice call">
+      <button @click="$emit('voiceCall')" class="p-2 hover:bg-gray-700 rounded-full transition-colors flex" title="Voice call">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
         </svg>
@@ -50,9 +43,9 @@
       <!-- More options button with dropdown -->
       <div class="relative">
         <button @click="showMenu = !showMenu" 
-                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                class="p-2 hover:bg-gray-700 rounded-full transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
           </svg>
         </button>
         
@@ -61,9 +54,9 @@
              @click="showMenu = false"
              class="fixed inset-0 z-10" />
         
-        <!-- Dropdown Menu - Telegram Style -->
+        <!-- Dropdown Menu -->
         <div v-if="showMenu"
-             class="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-2 z-20 overflow-hidden">
+             class="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 py-1 z-20 overflow-hidden">
           <button @click="handlePin" 
                   class="w-full px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-3 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +76,7 @@
           <button @click="handleUnblockAll" 
                   class="w-full px-4 py-3 text-left text-sm text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 flex items-center gap-3 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
             <span class="font-medium">Unblock All Users</span>
           </button>
@@ -106,7 +99,7 @@
 <script setup>
 import { ref } from 'vue'
 
-defineProps({ title: String, subtitle: String, avatar: String })
+defineProps(['title', 'subtitle', 'avatar'])
 const emit = defineEmits(['pin', 'block', 'clearChat', 'unblockAll', 'voiceCall'])
 
 const showMenu = ref(false)
@@ -141,3 +134,5 @@ function handleUnblockAll() {
 
 <style scoped>
 </style>
+
+

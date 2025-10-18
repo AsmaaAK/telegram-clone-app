@@ -1,0 +1,23 @@
+### Health
+GET http://localhost:4000/api/ping
+
+### Register
+POST http://localhost:4000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "username": "alice",
+  "password": "password123"
+}
+
+### Login
+POST http://localhost:4000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "password123"
+}
+
+

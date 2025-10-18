@@ -1,42 +1,75 @@
 <template>
-  <div class="min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-900 dark:to-gray-950">
-    <div class="w-full max-w-md">
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl ring-1 ring-black/5 dark:ring-white/10 p-8">
-        <div class="mb-8 text-center">
-          <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/40 text-blue-600">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-8 w-8">
-              <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Create Account</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Join Telegram today</p>
+  <div class="min-h-screen w-full flex items-center justify-center px-4 bg-white dark:bg-gray-900">
+    <div class="w-full max-w-sm">
+      <!-- Telegram Logo and Title -->
+      <div class="text-center mb-8">
+        <div class="mx-auto mb-4 w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-white">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
         </div>
-        <form @submit.prevent="onSubmit" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="name">Name</label>
-            <input id="name" v-model="form.name" type="text" autocomplete="name" 
-                   class="w-full input" placeholder="Enter your name" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="username">Username</label>
-            <input id="username" v-model="form.username" type="text" inputmode="text" autocomplete="username" 
-                   class="w-full input" placeholder="Choose a username" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="password">Password</label>
-            <input id="password" v-model="form.password" type="password" autocomplete="new-password" 
-                   class="w-full input" placeholder="Create a password" />
-          </div>
-          <button class="btn-primary w-full py-3 text-base font-medium disabled:opacity-60 disabled:cursor-not-allowed" :disabled="loading">
-            {{ loading ? 'Creating Account…' : 'Create Account' }}
-          </button>
-          <p v-if="error" class="text-sm text-red-600 dark:text-red-400 text-center mt-2">{{ error }}</p>
-        </form>
-        <div class="mt-6 text-center">
-          <router-link class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium" :to="{ name: 'login' }">
-            Already have an account? Sign in
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Join Telegram</h1>
+        <p class="text-gray-500 dark:text-gray-400">Please enter your details to create an account.</p>
+      </div>
+
+      <!-- Registration Form -->
+      <form @submit.prevent="onSubmit" class="space-y-4">
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+          <input 
+            id="name" 
+            v-model="form.name" 
+            type="text" 
+            autocomplete="name" 
+            placeholder="Enter your full name" 
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors" 
+          />
+        </div>
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Username</label>
+          <input 
+            id="username" 
+            v-model="form.username" 
+            type="text" 
+            autocomplete="username" 
+            placeholder="Choose a username" 
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors" 
+          />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
+          <input 
+            id="password" 
+            v-model="form.password" 
+            type="password" 
+            autocomplete="new-password" 
+            placeholder="Create a password" 
+            class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors" 
+          />
+        </div>
+        
+        <button 
+          type="submit"
+          :disabled="loading"
+          class="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white font-medium rounded-lg transition-colors disabled:cursor-not-allowed"
+        >
+          {{ loading ? 'Creating account...' : 'Create Account' }}
+        </button>
+        
+        <p v-if="error" class="text-sm text-red-600 dark:text-red-400 mt-2 text-center">{{ error }}</p>
+      </form>
+
+      <!-- Login Link -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Already have an account? 
+          <router-link 
+            :to="{ name: 'login' }" 
+            class="text-blue-500 hover:text-blue-600 font-medium"
+          >
+            Sign in
           </router-link>
-        </div>
+        </p>
       </div>
     </div>
   </div>
@@ -58,7 +91,7 @@ async function onSubmit() {
   error.value = ''
   try {
     await auth.register(form)
-    router.push({ name: 'chat' })
+    router.push({ name: 'home' })
   } catch (e) {
     error.value = e?.response?.data?.message || 'Registration failed'
   } finally { loading.value = false }
@@ -66,7 +99,15 @@ async function onSubmit() {
 </script>
 
 <style scoped>
-@reference "tailwindcss";
-.input { @apply border rounded-lg px-4 py-3 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition; }
-.btn-primary { @apply bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-4 py-3 rounded-lg transition shadow-sm; }
+/* Telegram-like styling */
+.telegram-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Custom focus styles */
+input:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
 </style>
+
+

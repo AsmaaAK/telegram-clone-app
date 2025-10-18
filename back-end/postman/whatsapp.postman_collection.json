@@ -1,0 +1,49 @@
+{
+      "info": {
+            "name": "WhatsApp Server",
+            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+      },
+      "item": [
+            {
+                  "name": "Ping",
+                  "request": {
+                        "method": "GET",
+                        "url": "http://localhost:4000/api/ping"
+                  }
+            },
+            {
+                  "name": "Register",
+                  "request": {
+                        "method": "POST",
+                        "header": [
+                              {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                              }
+                        ],
+                        "url": "http://localhost:4000/api/auth/register",
+                        "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"name\": \"Alice\",\n  \"username\": \"alice\",\n  \"password\": \"password123\"\n}"
+                        }
+                  }
+            },
+            {
+                  "name": "Login",
+                  "request": {
+                        "method": "POST",
+                        "header": [
+                              {
+                                    "key": "Content-Type",
+                                    "value": "application/json"
+                              }
+                        ],
+                        "url": "http://localhost:4000/api/auth/login",
+                        "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"password123\"\n}"
+                        }
+                  }
+            }
+      ]
+}

@@ -1,13 +1,13 @@
 <template>
   <div class="h-full w-full flex flex-col bg-white dark:bg-gray-900">
     <!-- Telegram-style header -->
-    <header class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center gap-4">
-      <router-link to="/" class="p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <header class="bg-blue-500 dark:bg-blue-600 text-white px-4 py-3 flex items-center gap-4 shadow-md">
+      <router-link to="/" class="p-2 -ml-2 hover:bg-blue-400 dark:hover:bg-blue-500 rounded-full transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
       </router-link>
-      <h1 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Profile</h1>
+      <h1 class="text-lg font-semibold">الملف الشخصي</h1>
     </header>
     
     <!-- Content -->
@@ -18,9 +18,9 @@
           <div class="flex flex-col items-center">
             <div class="relative">
               <img :src="getAvatarUrl(auth.user?.avatarUrl)" 
-                   class="w-32 h-32 rounded-full object-cover border-4 border-blue-500/20 shadow-lg" />
+                   class="w-32 h-32 rounded-full object-cover ring-4 ring-blue-500/20 shadow-lg" />
               <button @click="fileEl?.click()" 
-                      class="absolute bottom-2 right-2 w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors">
+                      class="absolute bottom-0 right-0 w-10 h-10 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -32,34 +32,34 @@
                      @change="upload"
                      class="hidden" />
             </div>
-            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Tap camera icon to change photo</p>
+            <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">اضغط على أيقونة الكاميرا لتغيير الصورة</p>
           </div>
         </div>
         
         <!-- Form section -->
-        <form @submit.prevent="save" class="space-y-4 px-4">
+        <form @submit.prevent="save" class="space-y-1 px-4">
           <!-- Name field -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+          <div class="bg-white dark:bg-gray-800 p-4 border-b border-gray-100 dark:border-gray-700">
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">الاسم</label>
             <input v-model="name" 
                    class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none" 
-                   placeholder="Enter your name" />
+                   placeholder="أدخل اسمك" />
           </div>
           
           <!-- About field -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">About</label>
+          <div class="bg-white dark:bg-gray-800 p-4">
+            <label class="block text-xs text-gray-500 dark:text-gray-400 mb-2">حولي</label>
             <textarea v-model="about" 
                       class="w-full bg-transparent text-gray-900 dark:text-gray-100 text-base focus:outline-none resize-none" 
-                      placeholder="Tell us about yourself" 
-                      rows="3"></textarea>
+                      placeholder="أخبرنا عن نفسك" 
+                      rows="2"></textarea>
           </div>
           
           <!-- Save button -->
           <button type="submit"
                   :disabled="loading"
-                  class="w-full mt-6 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white px-6 py-3.5 rounded-lg font-medium transition-colors shadow-md">
-            {{ loading ? 'Saving...' : 'Save Changes' }}
+                  class="w-full mt-6 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 disabled:opacity-50 text-white px-6 py-3 rounded-lg font-medium transition-colors shadow-md">
+            {{ loading ? 'جاري الحفظ...' : 'حفظ التغييرات' }}
           </button>
         </form>
       </div>
@@ -166,4 +166,9 @@ async function save() {
   }
 }
 </script>
+
+<style scoped>
+/* No additional styles needed - using Tailwind utilities */
+</style>
+
 
